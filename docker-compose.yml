@@ -1,0 +1,33 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: '3.1'
+services:
+    mariadb:
+        image: 'mariadb:10.6'
+        working_dir: /app
+        volumes:
+            - './app:/app'
+        environment:
+            - MYSQL_ROOT_PASSWORD=password
+            - MYSQL_DATABASE=ASPTest
+            - MYSQL_USER=mazoni
+            - MYSQL_PASSWORD=password
+        ports:
+            - '32003:3306'
+
+    webserver:
+        image: 'nginx:alpine'
+        working_dir: /app
+        volumes:
+            - './app:/app'
+            - './phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
+        ports:
+            - '32000:80'
+
+    php-fpm:
+        build: phpdocker/php-fpm
+        working_dir: /app
+        volumes:
+            - './app:/app'
+            - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini'
